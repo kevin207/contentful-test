@@ -31,7 +31,7 @@ export default async function Home() {
         <div className="mx-auto container space-y-12 px-4 md:px-6">
           <div className="flex flex-col items-center justify-center space-y-8 text-center text-black">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-              Welcome to our Knowledge Base
+              Welcome to our Knowledge Base {isEnabled && "(Preview)"}
             </h1>
             <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
               Discover our latest articles and stay up to date with the newest

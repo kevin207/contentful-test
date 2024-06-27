@@ -24,8 +24,6 @@ export default async function BlogPage({ params }: BlogPageProps) {
   const { isEnabled } = draftMode();
   const article: Article = await getArticle(slug, isEnabled);
 
-  console.log(isEnabled);
-
   if (!article) {
     notFound();
   }
