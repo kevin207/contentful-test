@@ -1,8 +1,9 @@
-import { client } from "../contentful";
+import { getAllArticles, getArticle } from "@/lib/api";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 import Image from "next/image";
-
-export const revalidate = 60;
+import { notFound } from "next/navigation";
+import { Article } from "../page";
+import { draftMode } from "next/headers";
 
 interface BlogPageProps {
   params: {
@@ -10,40 +11,53 @@ interface BlogPageProps {
   };
 }
 
-const fetchBlogPost = async (slug: string): Promise<any> => {
-  const queryResult = await client.getEntries({
-    content_type: "simplePost",
-    "fields.slug[match]": slug,
-  });
+export async function generateStaticParams() {
+  const allArticles = await getAllArticles();
 
-  return queryResult.items[0];
-};
+  return allArticles.map((article: Article) => ({
+    slug: article.slug,
+  }));
+}
 
-export default async function BlogPage(props: BlogPageProps) {
-  const { params } = props;
+export default async function BlogPage({ params }: BlogPageProps) {
   const { slug } = params;
+  const { isEnabled } = draftMode();
+  const article: Article = await getArticle(slug, isEnabled);
 
-  const post = await fetchBlogPost(slug);
-  const { name, body, image } = post.fields;
+  if (!article) {
+    notFound();
+  }
 
   return (
-    <main className="min-h-screen p-24 flex flex-col items-center">
-      {image && (
-        <Image
-          src={`https:${(image as any).fields.file.url}`} // Use image URL
-          alt={(image as any).fields.title as string}
-          width={700} // Set appropriate width
-          height={500} // Set appropriate height
-        />
-      )}
-
-      <div className="max-w-2xl my-4">
-        <h1 className="text-2xl">{name as string}</h1>
-      </div>
-
-      <div className="[&>p]:mb-8 [&>h2]:font-extrabold w-full mt-12">
-        {body && documentToReactComponents(body)}
-      </div>
+    <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white">
+      <section className="w-full">
+        <div className="container space-y-12 px-4 md:px-6">
+          <div className="space-y-4">
+            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl text-zinc-900">
+              {article.title}
+            </h1>
+            <p className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+              {article.summary}
+            </p>
+          </div>
+          <div className="space-y-8 lg:space-y-10">
+            <Image
+              alt="Article Image"
+              className="overflow-hidden rounded-xl object-cover"
+              height="365"
+              src={article.articleImage.url}
+              width="650"
+            />
+            <div className="space-y-4 md:space-y-6">
+              <div className="space-y-2">
+                <div className="max-w-[900px] text-zinc-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-zinc-400">
+                  {documentToReactComponents(article.details.json)}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
