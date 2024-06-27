@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     return new Response("Invalid token", { status: 401 });
   }
 
-  const article = await getArticle(slug);
+  const article = await getArticle(slug, true);
 
   if (!article) {
     return new Response("Article not found", { status: 404 });
