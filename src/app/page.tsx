@@ -41,9 +41,9 @@ export default async function Home() {
 
           <div className="space-y-12">
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {articles.map((article: Article) => (
+              {articles?.map((article: Article) => (
                 <article
-                  key={article.sys.id}
+                  key={article?.sys?.id}
                   className="h-full flex flex-col rounded-lg shadow-lg overflow-hidden"
                 >
                   <Image
@@ -51,32 +51,32 @@ export default async function Home() {
                     className="object-cover w-full"
                     height="263"
                     priority
-                    src={article.articleImage.url}
+                    src={article?.articleImage?.url}
                     width="350"
                   />
 
                   <div className="flex-1 p-6">
-                    <Link href={`/${article.slug}`}>
+                    <Link href={`/${article?.slug}`}>
                       <h3 className="text-2xl font-bold leading-tight text-zinc-900 pb-4">
                         {article.title}
                       </h3>
                     </Link>
 
                     <div className="inline-block rounded-full bg-zinc-100 px-3 py-1 text-sm font-semibold text-zinc-800">
-                      {article.categoryName}
+                      {article?.categoryName}
                     </div>
 
                     <p className="max-w-none text-zinc-500 mt-4 mb-2 text-sm dark:text-zinc-400">
-                      {article.summary}
+                      {article?.summary}
                     </p>
 
                     <div className="flex flex-row justify-between items-center w-full text-zinc-900 ">
                       <p className="max-w-none text-zinc-600 mt-2 mb-2 text-sm font-bold dark:text-zinc-400">
-                        Written by: {article.authorName}
+                        Written by: {article?.authorName}
                       </p>
                       <Link
                         className="h-fit text-sm font-medium"
-                        href={`/${article.slug}`}
+                        href={`/${article?.slug}`}
                       >
                         Read More →
                       </Link>
